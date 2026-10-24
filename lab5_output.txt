@@ -1,0 +1,109 @@
+======================================================================
+TASK 1: Minimax hand-trace (Section 5.1 tree)
+======================================================================
+Leaves (depth 3): [3, 5, 2, 9, 0, 7, 0, 0]
+  depth 2 node 0 (MAX): max(3, 5) = 5
+  depth 2 node 1 (MAX): max(2, 9) = 9
+  depth 2 node 2 (MAX): max(0, 7) = 7
+  depth 2 node 3 (MAX): max(0, 0) = 0
+  depth 1 node 0 (MIN): min(5, 9) = 5
+  depth 1 node 1 (MIN): min(7, 0) = 0
+  depth 0 node 0 (MAX): max(5, 0) = 5
+  => Root value = 5
+
+TASK 1 (extra): Minimax hand-trace (Section 5.2 tree)
+Leaves (depth 3): [3, 5, 2, 9, 3, 5, 2, 9]
+  depth 2 node 0 (MAX): max(3, 5) = 5
+  depth 2 node 1 (MAX): max(2, 9) = 9
+  depth 2 node 2 (MAX): max(3, 5) = 5
+  depth 2 node 3 (MAX): max(2, 9) = 9
+  depth 1 node 0 (MIN): min(5, 9) = 5
+  depth 1 node 1 (MIN): min(5, 9) = 5
+  depth 0 node 0 (MAX): max(5, 5) = 5
+  => Root value = 5
+
+======================================================================
+TASK 2: Leaf-evaluation counters
+======================================================================
+Tree A [3,5,2,9,0,7]+pad
+  Minimax   : value=5, leaves evaluated=8
+  Alpha-Beta: value=5, leaves evaluated=8
+  Same value: True
+Tree B [3,5,2,9,3,5,2,9]
+  Minimax   : value=5, leaves evaluated=8
+  Alpha-Beta: value=5, leaves evaluated=6
+  Same value: True
+
+Alpha-Beta trace for Tree A:
+MAX d0n0  alpha=-inf beta=inf
+  MIN d1n0  alpha=-inf beta=inf
+    MAX d2n0  alpha=-inf beta=inf
+      leaf[0] = 3  (evaluated)
+      leaf[1] = 5  (evaluated)
+    MAX d2n0 returns 5
+    MAX d2n1  alpha=-inf beta=5
+      leaf[2] = 2  (evaluated)
+      leaf[3] = 9  (evaluated)
+    MAX d2n1 returns 9
+  MIN d1n0 returns 5
+  MIN d1n1  alpha=5 beta=inf
+    MAX d2n2  alpha=5 beta=inf
+      leaf[4] = 0  (evaluated)
+      leaf[5] = 7  (evaluated)
+    MAX d2n2 returns 7
+    MAX d2n3  alpha=5 beta=7
+      leaf[6] = 0  (evaluated)
+      leaf[7] = 0  (evaluated)
+    MAX d2n3 returns 0
+  MIN d1n1 returns 0
+MAX d0n0 returns 5
+  => Root value = 5
+
+Alpha-Beta trace for Tree B:
+MAX d0n0  alpha=-inf beta=inf
+  MIN d1n0  alpha=-inf beta=inf
+    MAX d2n0  alpha=-inf beta=inf
+      leaf[0] = 3  (evaluated)
+      leaf[1] = 5  (evaluated)
+    MAX d2n0 returns 5
+    MAX d2n1  alpha=-inf beta=5
+      leaf[2] = 2  (evaluated)
+      leaf[3] = 9  (evaluated)
+    MAX d2n1 returns 9
+  MIN d1n0 returns 5
+  MIN d1n1  alpha=5 beta=inf
+    MAX d2n2  alpha=5 beta=inf
+      leaf[4] = 3  (evaluated)
+      leaf[5] = 5  (evaluated)
+    MAX d2n2 returns 5
+    PRUNE right child of d1n1 (alpha=5 >= beta=5)
+  MIN d1n1 returns 5
+MAX d0n0 returns 5
+  => Root value = 5
+
+======================================================================
+TASK 3: Branch reordering (all 2^7 = 128 child-swap configurations)
+======================================================================
+Tree A: root values seen = {5}  (must be a single value)
+  leaves evaluated: min=5, max=8, distribution={5: 8, 6: 32, 7: 40, 8: 48}
+  best ordering : [3, 5, 9, 2, 0, 0, 0, 7] -> 5 leaves
+  worst ordering: [3, 5, 2, 9, 0, 7, 0, 0] -> 8 leaves
+Tree B: root values seen = {5}  (must be a single value)
+  leaves evaluated: min=5, max=8, distribution={5: 16, 6: 48, 7: 16, 8: 48}
+  best ordering : [3, 5, 9, 2, 3, 5, 2, 9] -> 5 leaves
+  worst ordering: [3, 5, 2, 9, 2, 9, 3, 5] -> 8 leaves
+
+======================================================================
+EDGE CASES / COMPARISON TESTS
+======================================================================
+Edge case 1: single leaf (depth 0)
+  minimax: (7, 1)  alphabeta: (7, 1)
+Edge case 2: all leaves equal
+  minimax: (4, 8)  alphabeta: (4, 5)
+Edge case 3: negative utilities
+  minimax: (-3, 8)  alphabeta: (-3, 7)
+Edge case 4: leaf count not a power of two (zero padding, as in 5.1)
+  padded: [3, 5, 2, 9, 0, 7, 0, 0]
+  minimax: (5, 8)  alphabeta: (5, 8)
+Edge case 5: 2000 random trees - alpha-beta must equal minimax and never evaluate more leaves
+  mismatches/violations: 0   total leaves saved: 7879
