@@ -1,0 +1,18 @@
+# Lab 4 A* heuristic audit
+
+## Files
+- `lab4_astar_audit.py`: A*, UCS, first-three-expansion audit, admissibility/consistency checks, and the one-value overestimate experiment. Uses only the Python standard library.
+- `captured_output.txt`: output from the reproducible run.
+- `lab4_report.docx`: written report with manual calculations and interpretation.
+
+## Run
+From this folder, run:
+
+```bash
+python lab4_astar_audit.py
+```
+
+## Input graph
+The graph and h values are transcribed from the supplied lab screenshots: `S -> A (1), B (4)`; `A -> C (2)`; `B -> G (5)`; `C -> G (3)`; `G` has no successors. Heuristic: `S:5, A:4, B:4, C:2, G:0`.
+
+The priority queue uses `(f, g, node, path)`; ties follow Python tuple order. The goal is logged when processed but excluded from expanded-node counts. Stale queue entries are checked before goal processing. The standard runs have no stale entries.
