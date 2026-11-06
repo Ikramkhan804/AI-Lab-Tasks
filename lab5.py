@@ -1,27 +1,9 @@
-"""
-Lab 5: Adversarial Search - Minimax & Alpha-Beta Pruning
-CAI601400 - Artificial Intelligence Lab Manual
-
-Lab Tasks implemented here
-  Task 1: Trace the supplied tree by hand using Minimax   -> trace_minimax()
-  Task 2: Add a leaf-evaluation counter to both algorithms -> minimax(), alphabeta()
-  Task 3: Reorder branches and observe pruning changes     -> reorder_experiment()
-Plus: edge-case / verification tests                       -> run_edge_cases()
-
-Trees are complete binary trees stored as a flat list of leaf utilities
-(left-to-right). Root is a MAX node; levels alternate MAX, MIN, MAX ...
-"""
 import itertools
 import math
 import random
-
 NEG_INF = float("-inf")
 POS_INF = float("inf")
 
-
-# --------------------------------------------------------------------------
-# Helpers
-# --------------------------------------------------------------------------
 def pad_scores(scores):
     """Pad with 0 to the next power of two (as in the manual's driver code).
     Returns (padded_scores, depth)."""
@@ -29,7 +11,6 @@ def pad_scores(scores):
     depth = math.ceil(math.log2(len(scores))) if len(scores) > 1 else 0
     scores += [0] * (2 ** depth - len(scores))
     return scores, depth
-
 
 # --------------------------------------------------------------------------
 # Task 2a: Minimax with leaf counter
@@ -42,7 +23,6 @@ def minimax(depth, index, max_turn, scores, target, counter):
     left = minimax(depth + 1, index * 2, not max_turn, scores, target, counter)
     right = minimax(depth + 1, index * 2 + 1, not max_turn, scores, target, counter)
     return max(left, right) if max_turn else min(left, right)
-
 
 # --------------------------------------------------------------------------
 # Task 2b: Alpha-Beta with leaf counter
@@ -69,22 +49,15 @@ def alphabeta(depth, index, max_turn, scores, target, alpha, beta, counter):
             break
     return value
 
-
 def run_minimax(scores):
     scores, depth = pad_scores(scores)
     c = [0]
     return minimax(0, 0, True, scores, depth, c), c[0]
-
-
 def run_alphabeta(scores):
     scores, depth = pad_scores(scores)
     c = [0]
     return alphabeta(0, 0, True, scores, depth, NEG_INF, POS_INF, c), c[0]
 
-
-# --------------------------------------------------------------------------
-# Task 1: bottom-up hand-trace table for Minimax
-# --------------------------------------------------------------------------
 def trace_minimax(scores):
     scores, depth = pad_scores(scores)
     print(f"Leaves (depth {depth}): {scores}")
@@ -138,10 +111,8 @@ def trace_alphabeta(scores):
     print(f"  => Root value = {root}")
     return root
 
-
-# --------------------------------------------------------------------------
 # Task 3: reorder branches (swap children at internal nodes)
-# --------------------------------------------------------------------------
+
 def build_tree(scores):
     """Flat leaves -> nested [left, right] lists."""
     nodes = list(scores)
@@ -149,12 +120,10 @@ def build_tree(scores):
         nodes = [[nodes[i], nodes[i + 1]] for i in range(0, len(nodes), 2)]
     return nodes[0]
 
-
 def flatten(tree):
     if not isinstance(tree, list):
         return [tree]
     return flatten(tree[0]) + flatten(tree[1])
-
 
 def apply_swaps(tree, swap_bits):
     """Swap children at internal nodes. swap_bits is consumed in pre-order."""
@@ -165,9 +134,7 @@ def apply_swaps(tree, swap_bits):
             return node
         l, r = rec(node[0]), rec(node[1])
         return [r, l] if next(it) else [l, r]
-
     return rec(tree)
-
 
 def reorder_experiment(scores):
     scores, depth = pad_scores(scores)
@@ -185,9 +152,7 @@ def reorder_experiment(scores):
     return results, values, counts, best, worst
 
 
-# --------------------------------------------------------------------------
 # Edge cases / verification
-# --------------------------------------------------------------------------
 def run_edge_cases():
     print("Edge case 1: single leaf (depth 0)")
     print("  minimax:", run_minimax([7]), " alphabeta:", run_alphabeta([7]))
@@ -221,9 +186,7 @@ def run_edge_cases():
     assert bad == 0
 
 
-# --------------------------------------------------------------------------
 # Driver
-# --------------------------------------------------------------------------
 if __name__ == "__main__":
     tree_a = [3, 5, 2, 9, 0, 7]                 # Section 5.1 (padded to 8)
     tree_b = [3, 5, 2, 9, 3, 5, 2, 9]           # Section 5.2

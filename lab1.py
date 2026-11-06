@@ -64,33 +64,24 @@ milestones = [
         ),
     },
 ]
-
 for milestone in milestones:
     print(
         f"{milestone['year_or_period']} — {milestone['event']}\n"
         f"Significance: {milestone['significance']}\n"
         f"Source: {milestone['source']}\n"
     )
-
     # Task 2: Scholarship rules and exactly four core cases
 # All thresholds and conditions are synthetic lab assumptions.
-
 def assess(applicant):
     if applicant["score"] < 70:
         return "FAIL", "Score is below the synthetic minimum of 70."
-
     if not applicant["documents_complete"]:
         return "FAIL", "Required documents are incomplete."
-
     if not applicant["local_resident"]:
         return "FAIL", "LocalResidency condition is not met."
-
     if applicant["annual_income"] > 50_000:
         return "FAIL", "IncomeCap condition is not met."
-
     return "PASS", "All four explicit rules are met."
-
-
 cases = [
     {
         "name": "Case 1 — pass",
@@ -133,7 +124,6 @@ cases = [
         "expected": "PASS",
     },
 ]
-
 for case in cases:
     actual, reason = assess(case["input"])
     print(

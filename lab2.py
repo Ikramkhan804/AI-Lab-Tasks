@@ -33,7 +33,6 @@ peas = {
             "stopping distance and collision risk."
         ),
     },
-
     "LLM-based student-support agent": {
         "Performance measure": [
             "Give accurate answers grounded in approved course information",
@@ -73,7 +72,6 @@ peas = {
         ),
     },
 }
-
 for agent, specification in peas.items():
     print(f"\n{agent}")
     for component, entries in specification.items():
@@ -83,8 +81,6 @@ for agent, specification in peas.items():
                 print(f"  - {entry}")
         else:
             print(f"  {entries}")
-
-
 environment_classifications = [
     {
         "system": "Delivery robot — real world",
@@ -137,7 +133,6 @@ environment_classifications = [
         ),
     },
 ]
-
 print("\nEnvironment classifications")
 for item in environment_classifications:
     print(f"\n{item['system']}")
@@ -147,7 +142,6 @@ for item in environment_classifications:
     print(f"  Hidden example: {item['hidden_example']}")
     print(f"  Action outcome: {item['outcome_example']}")
 
-
 # Task 3: Room controller with previous-mode memory
 #
 # Assumptions:
@@ -155,15 +149,12 @@ for item in environment_classifications:
 # - Cool above 26°C.
 # - At exactly 18°C or 26°C, target IDLE.
 # - An empty room targets OFF regardless of temperature.
-
 class RoomController:
     def __init__(self):
         self.previous_target_mode = None
-
     def update(self, temperature_c, occupied):
         """Return the target mode and whether a command should be sent."""
         previous_mode = self.previous_target_mode
-
         # Occupancy has priority over temperature.
         if not occupied:
             target_mode = "OFF"
@@ -173,13 +164,9 @@ class RoomController:
             target_mode = "COOL"
         else:
             target_mode = "IDLE"
-
         send_command = target_mode != previous_mode
         self.previous_target_mode = target_mode
-
         return previous_mode, target_mode, send_command
-
-
 # Cases run in sequence so the controller remembers the previous target.
 cases = [
     ("Initial heat", 17, True),
@@ -190,13 +177,10 @@ cases = [
     ("Repeated cool percept", 27, True),
     ("Empty room priority", 30, False),
 ]
-
 controller = RoomController()
-
 print("\nRoom-controller cases")
 for name, temperature, occupied in cases:
     previous, target, send = controller.update(temperature, occupied)
-
     command_result = "SEND" if send else "NO COMMAND"
     print(
         f"{name}: "

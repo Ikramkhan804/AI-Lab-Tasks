@@ -1,22 +1,5 @@
-"""Lab 4: A* heuristic audit, UCS control, and overestimate experiment.
-
-Inputs transcribed from the supplied screenshots:
-  S -> A (1), B (4)
-  A -> C (2)
-  B -> G (5)
-  C -> G (3)
-  h = {S: 5, A: 4, B: 4, C: 2, G: 0}
-
-Priority queue tuple is (f, g, node, path), so ties use Python tuple order:
-f first, then g, then node label, then path. Successors are considered in the
-listed order. Valid goal processing is included in the processed trace but
-excluded from expanded nodes/count. Stale entries are ignored before goal
-checking. Standard-library Python only.
-"""
-
 from heapq import heappop, heappush
 from itertools import count
-
 GRAPH = {
     "S": [("A", 1), ("B", 4)],
     "A": [("C", 2)],
@@ -28,7 +11,6 @@ HEURISTIC = {"S": 5, "A": 4, "B": 4, "C": 2, "G": 0}
 START = "S"
 GOAL = "G"
 
-
 def path_cost(graph, path):
     """Independently sum the weights along a returned path."""
     total = 0
@@ -36,7 +18,6 @@ def path_cost(graph, path):
         total += next(weight for neighbor, weight in graph[source]
                       if neighbor == target)
     return total
-
 
 def best_first_search(graph, heuristic, start, goal):
     """Run A* (or UCS when heuristic is all zero).
@@ -83,7 +64,6 @@ def best_first_search(graph, heuristic, start, goal):
         "expanded": expanded, "stale_skipped": stale_skipped,
     }
 
-
 def manual_first_three(graph, heuristic, start):
     """Print first three non-goal expansions with arithmetic/frontier."""
     sequence = count()
@@ -124,7 +104,6 @@ def manual_first_three(graph, heuristic, start):
                   f"(f={nf}, g={ng}, node={nnode})")
         print()
 
-
 def print_run(label, graph, heuristic):
     result = best_first_search(graph, heuristic, START, GOAL)
     independently_summed = path_cost(graph, result["path"])
@@ -139,7 +118,6 @@ def print_run(label, graph, heuristic):
     print()
     assert result["cost"] == independently_summed
     return result
-
 
 def main():
     print("First three A* expansions by hand, verified by the queue run")
@@ -170,7 +148,5 @@ def main():
                   f"{HEURISTIC[neighbor]}={rhs}: {lhs <= rhs}")
     print("  Overestimate check: h(C)=10 > true remaining cost 3; "
           "on C->G, 10 <= 3+0 is false.")
-
-
 if __name__ == "__main__":
     main()

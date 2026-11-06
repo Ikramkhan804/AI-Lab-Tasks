@@ -1,7 +1,6 @@
 from pathlib import Path
 import heapq
 from itertools import count
-
 # Explicit substitute graph because the referenced Section 3.2 source was not in the workspace.
 GRAPH = {
     "A": ["B", "C"],
@@ -13,8 +12,6 @@ GRAPH = {
     "G": [],
 }
 START, GOAL = "A", "G"
-
-
 def bfs_trace(graph, start, goal):
     queue = [start]
     discovered = {start}
@@ -40,8 +37,6 @@ def bfs_trace(graph, start, goal):
             current = parent[current]
         path.reverse()
     return rows, order, path
-
-
 def dfs_trace(graph, start, goal):
     # Stack holds full paths; the rightmost path is the top of stack.
     stack = [[start]]
@@ -62,11 +57,7 @@ def dfs_trace(graph, start, goal):
                 stack.append(path + [successor])
         rows.append((node, [list(p) for p in stack]))
     return rows, order, found_path
-
-
 FOUND, CUTOFF, FAILURE = "FOUND", "CUTOFF", "FAILURE"
-
-
 def dls(graph, start, goal, limit):
     """Depth-limited search; root depth is zero, with a path-local cycle check."""
     def visit(node, depth, path):
@@ -86,9 +77,7 @@ def dls(graph, start, goal, limit):
             if status == CUTOFF:
                 saw_cutoff = True
         return (CUTOFF if saw_cutoff else FAILURE), []
-
     return visit(start, 0, [start])
-
 
 def iddfs(graph, start, goal, maximum_depth):
     tried = []
@@ -101,8 +90,6 @@ def iddfs(graph, start, goal, maximum_depth):
             return status, [], tried
     return CUTOFF, [], tried
 
-
-# Weighted extension of the same directed graph plus an explicitly added A -> G corridor.
 WEIGHTED_GRAPH = {
     "A": [("B", 2), ("C", 3), ("G", 20)],
     "B": [("A", 2), ("D", 2), ("E", 5)],
@@ -112,7 +99,6 @@ WEIGHTED_GRAPH = {
     "F": [("G", 2)],
     "G": [],
 }
-
 
 def ucs(graph, start, goal):
     serial = count()
@@ -135,14 +121,11 @@ def ucs(graph, start, goal):
                 heapq.heappush(frontier, (new_cost, next(serial), child, path + [child]))
     return [], float("inf"), processed
 
-
 def path_cost(graph, path):
     total = 0
     for left, right in zip(path, path[1:]):
         total += next(weight for node, weight in graph[left] if node == right)
     return total
-
-
 def main():
     print("GRAPH successor order:", GRAPH)
     for label, search in (("BFS", bfs_trace), ("DFS", dfs_trace)):
@@ -153,19 +136,16 @@ def main():
             print(f"processed={node}; frontier={frontier}")
         print("visit order:", order)
         print("final path:", path)
-
     print()
     print("DLS at limits 1, 2, 3, 4")
     for limit in (1, 2, 3, 4):
         status, path = dls(GRAPH, START, GOAL, limit)
         print(f"limit={limit}; status={status}; path={path or 'none'}")
-
     print()
     print("IDDFS maximum depths 1, 2, 3, 4")
     for maximum in (1, 2, 3, 4):
         status, path, tried = iddfs(GRAPH, START, GOAL, maximum)
         print(f"maximum={maximum}; status={status}; path={path or 'none'}; limits_attempted={tried}")
-
     path, cost, processed = ucs(WEIGHTED_GRAPH, START, GOAL)
     print()
     print("UCS weighted graph")
@@ -181,7 +161,6 @@ def main():
     print("BFS on weighted topology visit order:", bfs_order)
     print("BFS fewest-hop path:", bfs_path)
     print("BFS route cost:", path_cost(WEIGHTED_GRAPH, bfs_path))
-
 
 if __name__ == "__main__":
     main()

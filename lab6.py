@@ -1,6 +1,3 @@
-# Short core version: tokenization, FAQ, chunking, retrieval evaluation, chatbot.
-# Full submission extras (DOCX report, separate guided scripts) are not included.
-# Install: pip install numpy scikit-learn sentence-transformers
 import csv
 import importlib
 import json
